@@ -1,0 +1,27 @@
+:root {
+    --background-color: #f1f1f1 !important;
+    --primary-color: var(--p-primary-color);
+    --font-family: 'Sarabun', sans-serif !important;
+
+}
+
+body {
+    font-family: var(--font-family);
+    color:#0C0C0C;
+    font-weight: normal;
+    line-height: 1;
+    background: var(--background-color);
+  }
+
+.field {
+    margin: 10px 0 15px 0;
+}
+
+.p-tooltip {
+    margin-top: 5px;
+}
+
+.p-tooltip-text {
+    font-size: 12px;
+    line-height: 20px;
+}
