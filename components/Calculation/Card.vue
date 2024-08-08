@@ -8,14 +8,120 @@
     </div>
     <div class="calculation-content">
       <div class="form-container">
-        <CalculationForm />
+        <div class="form">
+          <div class="field">
+            <label class="text">ราคาอสังหาฯ</label>
+            <IconField>
+              <InputNumber v-model="propertyCost" :max="99999999999" fluid />
+              <InputIcon>บาท</InputIcon>
+            </IconField>
+          </div>
+
+          <div class="interest-box">
+            <div class="field">
+              <label class="text">อัตราดอกเบี้ย</label>
+              <IconField>
+                <InputNumber
+                  v-model="interestRatio"
+                  :max="99.99"
+                  :minFractionDigits="2"
+                  :maxFractionDigits="2"
+                  fluid
+                />
+                <InputIcon>%</InputIcon>
+              </IconField>
+            </div>
+            <div class="field">
+              <label class="text">ระยะเวลากู้</label>
+              <IconField>
+                <InputNumber v-model="loanPeriod" :min="3" :max="99" fluid />
+                <InputIcon>ปี</InputIcon>
+              </IconField>
+            </div>
+          </div>
+          <div class="button-group">
+            <Button
+              class="button"
+              label="ล้างข้อมูล"
+              icon="pi pi-refresh"
+              link
+              @click="handleClickClear"
+            />
+            <Button
+              class="button"
+              label="คำนวณสินเชื่อ"
+              @click="handleClickCalculate"
+            />
+          </div>
+        </div>
       </div>
       <div class="display-result">
-        <CalculationResultDisplay />
+        <CalculationResultDisplay
+          :loanAmount="loanAmount"
+          :monthlyBaseIncome="monthlyBaseIncome"
+          :monthlyInstallment="monthlyInstallment"
+        />
       </div>
     </div>
   </div>
 </template>
+
+<script lang="ts" setup>
+const propertyCost = ref();
+const interestRatio = ref();
+const loanPeriod = ref();
+
+const loanAmount = ref(0);
+const monthlyBaseIncome = ref(0);
+const monthlyInstallment = ref(0);
+
+function handleClickClear() {
+  propertyCost.value = null;
+  interestRatio.value = null;
+  loanPeriod.value = null;
+}
+
+function calculateEMI(
+  principal: number,
+  annualInterestRate: number,
+  loanPeriod: number
+) {
+  const months = loanPeriod * 12;
+  const monthlyInterestRate = annualInterestRate / 12 / 100;
+
+  const emi =
+    (principal *
+      monthlyInterestRate *
+      Math.pow(1 + monthlyInterestRate, months)) /
+    (Math.pow(1 + monthlyInterestRate, months) - 1);
+
+  return emi;
+}
+
+function calculateMinimumMonthlyIncome(propertyPrice: number) {
+  const basePrice = 650000; // Base price used in the formula
+  const baseIncome = 10000; // Base income used in the formula
+  return (propertyPrice / basePrice) * baseIncome;
+}
+
+function handleClickCalculate() {
+  if (propertyCost.value && interestRatio.value && loanPeriod.value) {
+    const emi = calculateEMI(
+      propertyCost.value,
+      interestRatio.value,
+      loanPeriod.value
+    );
+
+    const minimumMonthlyIncome = calculateMinimumMonthlyIncome(
+      propertyCost.value
+    );
+
+    loanAmount.value = propertyCost.value;
+    monthlyBaseIncome.value = minimumMonthlyIncome;
+    monthlyInstallment.value = emi;
+  }
+}
+</script>
 
 <style lang="scss" scoped>
 .container {
@@ -61,5 +167,27 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
+}
+
+.text {
+  display: flex;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.interest-box {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.button {
+  width: 50%;
 }
 </style>

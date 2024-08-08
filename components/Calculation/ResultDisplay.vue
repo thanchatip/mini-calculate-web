@@ -7,14 +7,16 @@
     <div class="text-row">
       <div class="text">วงเงินกู้</div>
       <div class="value-box">
-        <div class="text-amount">12323000</div>
+        <div class="text-amount">{{ loanAmount > 0 ? loanAmount : "" }}</div>
         <div class="text-suffix">บาท</div>
       </div>
     </div>
     <div class="text-row">
       <div class="text">รายได้ขั้นต่ำต่อเดือน</div>
       <div class="value-box">
-        <div class="text-amount">135,000</div>
+        <div class="text-amount">
+          {{ monthlyBaseIncome ? monthlyBaseIncome.toFixed(0) : "" }}
+        </div>
         <div class="text-suffix">บาท</div>
       </div>
     </div>
@@ -22,7 +24,9 @@
     <div class="text-row">
       <div class="text">ยอดผ่อนต่อเดือน</div>
       <div class="value-box">
-        <div class="text-total-amount">135,000</div>
+        <div class="text-total-amount">
+          {{ monthlyInstallment ? monthlyInstallment.toFixed(0) : "" }}
+        </div>
         <div class="text-suffix">บาท</div>
       </div>
     </div>
@@ -32,11 +36,20 @@
 <script lang="ts" setup>
 const interestTips =
   "ตัวเลขที่แสดงจะเป็นตัวเลขเฉพาะการกู้ โดยวิธีคำนวณง่ายๆ เงินเดือน 10,000 บาท จะกู้ได้ประมาณ 650,000 บาท";
+
+interface Props {
+  loanAmount: number;
+  monthlyBaseIncome: number;
+  monthlyInstallment: number;
+}
+
+const props = defineProps<Props>();
 </script>
 
 <style lang="scss" scoped>
 .card {
-  min-width: 400;
+  min-width: 300px;
+  min-height: 200px;
   background: #fcfcfd;
   border-radius: 16px;
   border: 1px solid #d0d0d0;
