@@ -25,3 +25,11 @@ body {
     font-size: 12px;
     line-height: 20px;
 }
+
+.p-inputicon {
+    color: #545454 !important;
+}
+
+.p-inputtext:enabled:focus {
+    border-color: #1DC48D !important;
+}
