@@ -4,30 +4,32 @@
     <i class="icon pi pi-exclamation-circle"></i>
   </div>
   <div class="card">
-    <div class="text-row">
-      <div class="text">วงเงินกู้</div>
-      <div class="value-box">
-        <div class="text-amount">{{ loanAmount > 0 ? loanAmount : "" }}</div>
-        <div class="text-suffix">บาท</div>
-      </div>
-    </div>
-    <div class="text-row">
-      <div class="text">รายได้ขั้นต่ำต่อเดือน</div>
-      <div class="value-box">
-        <div class="text-amount">
-          {{ monthlyBaseIncome ? monthlyBaseIncome.toFixed(0) : "" }}
+    <div class="result-box">
+      <div class="text-row">
+        <div class="text">วงเงินกู้</div>
+        <div class="value-box">
+          <div class="text-amount">{{ dataFormatter(loanAmount) }}</div>
+          <div class="text-suffix">บาท</div>
         </div>
-        <div class="text-suffix">บาท</div>
       </div>
-    </div>
-    <Divider class="divider" />
-    <div class="text-row">
-      <div class="text">ยอดผ่อนต่อเดือน</div>
-      <div class="value-box">
-        <div class="text-total-amount">
-          {{ monthlyInstallment ? monthlyInstallment.toFixed(0) : "" }}
+      <div class="text-row">
+        <div class="text">รายได้ขั้นต่ำต่อเดือน</div>
+        <div class="value-box">
+          <div class="text-amount">
+            {{ dataFormatter(monthlyBaseIncome) }}
+          </div>
+          <div class="text-suffix">บาท</div>
         </div>
-        <div class="text-suffix">บาท</div>
+      </div>
+      <Divider class="divider" />
+      <div class="text-row">
+        <div class="text">ยอดผ่อนต่อเดือน</div>
+        <div class="value-box">
+          <div class="text-total-amount">
+            {{ dataFormatter(monthlyInstallment) }}
+          </div>
+          <div class="text-suffix">บาท</div>
+        </div>
       </div>
     </div>
   </div>
@@ -44,22 +46,41 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+function dataFormatter(value: number) {
+  console.log(value);
+  if (isNaN(value)) {
+    return "";
+  }
+
+  if (value < 1) {
+    return "";
+  }
+
+  const formattedNumber = value.toFixed(0).replace(/\d(?=(\d{3})+$)/g, "$&,");
+
+  return formattedNumber;
+}
 </script>
 
 <style lang="scss" scoped>
 .card {
   min-width: 300px;
-  min-height: 200px;
   background: #fcfcfd;
   border-radius: 16px;
   border: 1px solid #d0d0d0;
-  padding: 20px 15px;
+
   position: relative;
+}
+
+.result-box {
+  margin: 20px 15px;
 }
 
 .header {
   margin: 10px 0;
   font-size: 14px;
+  cursor: pointer;
 }
 
 .icon {
@@ -73,6 +94,7 @@ const props = defineProps<Props>();
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 15px;
+  height: 32px;
 }
 
 .value-box {
