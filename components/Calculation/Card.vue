@@ -27,7 +27,7 @@
           </div>
 
           <div class="interest-box">
-            <div class="field">
+            <div class="field input-row">
               <label class="text">อัตราดอกเบี้ย</label>
               <IconField>
                 <InputNumber
@@ -45,7 +45,7 @@
                 {{ v$.interestRatio.$errors[0]?.$message }}
               </small>
             </div>
-            <div class="field">
+            <div class="field input-row">
               <label class="text">ระยะเวลากู้</label>
               <IconField>
                 <InputNumber
@@ -195,6 +195,13 @@ async function handleClickCalculate() {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/fluid-sizing.scss";
+
+$laptop: 1400px;
+$tablet: 992px;
+$mobile: 700px;
+$smallMobile: 568px;
+
 .container {
   width: 100%;
   background: #fde9f3;
@@ -214,7 +221,13 @@ async function handleClickCalculate() {
 }
 
 .header {
-  font-size: 20px;
+  $map: (
+    $laptop: 30px,
+    $tablet: 28px,
+    $mobile: 22px,
+    $smallMobile: 22px,
+  );
+  @include poly-fluid-sizing("font-size", $map);
 }
 
 .sub-header {
@@ -238,14 +251,20 @@ async function handleClickCalculate() {
 .calculation-content {
   margin-top: 5px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
 }
 
 .text {
   display: flex;
   margin-bottom: 10px;
-  font-size: 14px;
+  $map: (
+    $laptop: 16px,
+    $tablet: 14px,
+    $mobile: 14px,
+    $smallMobile: 14px,
+  );
+  @include poly-fluid-sizing("font-size", $map);
 }
 
 .interest-box {
@@ -259,9 +278,15 @@ async function handleClickCalculate() {
   display: flex;
   justify-content: space-between;
   gap: 10px;
+  margin-top: 15px;
 }
 
+.input-row,
 .button {
   width: 50%;
+}
+
+.display-result {
+  max-width: 100%;
 }
 </style>

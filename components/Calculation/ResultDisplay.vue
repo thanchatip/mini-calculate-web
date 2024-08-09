@@ -5,14 +5,14 @@
   </div>
   <div class="card">
     <div class="result-box">
-      <div class="text-row">
+      <div class="text-content">
         <div class="text">วงเงินกู้</div>
         <div class="value-box">
           <div class="text-amount">{{ dataFormatter(loanAmount) }}</div>
           <div class="text-suffix">บาท</div>
         </div>
       </div>
-      <div class="text-row">
+      <div class="text-content">
         <div class="text">รายได้ขั้นต่ำต่อเดือน</div>
         <div class="value-box">
           <div class="text-amount">
@@ -22,7 +22,7 @@
         </div>
       </div>
       <Divider class="divider" />
-      <div class="text-row">
+      <div class="text-content">
         <div class="text">ยอดผ่อนต่อเดือน</div>
         <div class="value-box">
           <div class="text-total-amount">
@@ -64,17 +64,25 @@ function dataFormatter(value: number) {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/fluid-sizing.scss";
+
+$laptop: 1400px;
+$tablet: 992px;
+$mobile: 700px;
+$smallMobile: 568px;
+
 .card {
-  min-width: 300px;
   background: #fcfcfd;
   border-radius: 16px;
   border: 1px solid #d0d0d0;
-
   position: relative;
 }
 
 .result-box {
   margin: 20px 15px;
+  display: flex;
+  flex-direction: column;
+  //gap: 10px;
 }
 
 .header {
@@ -88,7 +96,7 @@ function dataFormatter(value: number) {
   font-size: 13px;
 }
 
-.text-row {
+.text-content {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -105,17 +113,29 @@ function dataFormatter(value: number) {
 }
 
 .text-amount {
-  font-size: 32px;
   font-weight: bold;
+  $map: (
+    $laptop: 32px,
+    $tablet: 30px,
+    $mobile: 28px,
+    $smallMobile: 28px,
+  );
+  @include poly-fluid-sizing("font-size", $map);
 }
 
 .text-total-amount {
-  font-size: 32px;
   font-weight: bold;
   background: linear-gradient(135deg, #24ce75, #169bfd);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  $map: (
+    $laptop: 32px,
+    $tablet: 30px,
+    $mobile: 28px,
+    $smallMobile: 28px,
+  );
+  @include poly-fluid-sizing("font-size", $map);
 }
 
 .text,
@@ -126,5 +146,24 @@ function dataFormatter(value: number) {
 
 .divider {
   background: #9d9d9d;
+  margin-top: 5px;
+}
+
+@media only screen and (max-width: $mobile) {
+  .text-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+
+  .value-box {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 15px;
+  }
 }
 </style>
