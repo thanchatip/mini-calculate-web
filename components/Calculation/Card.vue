@@ -12,9 +12,18 @@
           <div class="field">
             <label class="text">ราคาอสังหาฯ</label>
             <IconField>
-              <InputNumber v-model="propertyCost" :max="99999999999" fluid />
+              <InputNumber
+                v-model="propertyCost"
+                fluid
+                :class="{ 'p-invalid': v$.propertyCost.$error }"
+                :max="99999999999"
+                @blur="v$.propertyCost.$touch"
+              />
               <InputIcon>บาท</InputIcon>
             </IconField>
+            <small v-if="v$.propertyCost.$error" class="p-error">
+              {{ v$.propertyCost.$errors[0]?.$message }}
+            </small>
           </div>
 
           <div class="interest-box">
@@ -27,16 +36,30 @@
                   :minFractionDigits="2"
                   :maxFractionDigits="2"
                   fluid
+                  :class="{ 'p-invalid': v$.interestRatio.$error }"
+                  @blur="v$.interestRatio.$touch"
                 />
                 <InputIcon>%</InputIcon>
               </IconField>
+              <small v-if="v$.interestRatio.$error" class="p-error">
+                {{ v$.interestRatio.$errors[0]?.$message }}
+              </small>
             </div>
             <div class="field">
               <label class="text">ระยะเวลากู้</label>
               <IconField>
-                <InputNumber v-model="loanPeriod" :min="3" :max="99" fluid />
+                <InputNumber
+                  v-model="loanPeriod"
+                  :max="99"
+                  fluid
+                  :class="{ 'p-invalid': v$.loanPeriod.$error }"
+                  @blur="v$.loanPeriod.$touch"
+                />
                 <InputIcon>ปี</InputIcon>
               </IconField>
+              <small v-if="v$.loanPeriod.$error" class="p-error">
+                {{ v$.loanPeriod.$errors[0]?.$message }}
+              </small>
             </div>
           </div>
           <div class="button-group">
@@ -50,6 +73,7 @@
             <Button
               class="button"
               label="คำนวณสินเชื่อ"
+              :disabled="isDisabledCalculateButton"
               @click="handleClickCalculate"
             />
           </div>
@@ -67,18 +91,64 @@
 </template>
 
 <script lang="ts" setup>
+import useVuelidate from "@vuelidate/core";
+import { required, helpers, minValue, maxValue } from "@vuelidate/validators";
+
+const { withMessage } = helpers;
+
+const loanAmount = ref();
+const monthlyBaseIncome = ref();
+const monthlyInstallment = ref();
+
 const propertyCost = ref();
 const interestRatio = ref();
 const loanPeriod = ref();
 
-const loanAmount = ref(0);
-const monthlyBaseIncome = ref(0);
-const monthlyInstallment = ref(0);
+const validations = {
+  propertyCost: {
+    required: withMessage("กรุณากรอกราคาอสังหาฯ", required),
+    maxValue: withMessage(
+      "ราคาอสังหาฯ ต้องไม่เกิน 99,999,999,999 บาท",
+      maxValue(99999999999)
+    ),
+  },
+  interestRatio: {
+    required: withMessage("กรุณากรอกอัตราดอกเบี้ย", required),
+    minValue: withMessage("อัตราดอกเบี้ยต้องอย่างน้อย 2%", minValue(2)),
+    maxValue: withMessage("อัตราดอกเบี้ยต้องไม่เกิน 99.99%", maxValue(99.99)),
+  },
+  loanPeriod: {
+    required: withMessage("กรุณากรอกระยะเวลากู้", required),
+    minValue: withMessage("ระยะเวลากู้ไม่น้อยกว่า 3 ปี", minValue(3)),
+    maxValue: withMessage("ระยะเวลากู้ต้องไม่เกิน 99 ปี", maxValue(99)),
+  },
+};
+
+const v$ = useVuelidate(validations, {
+  propertyCost: propertyCost,
+  interestRatio: interestRatio,
+  loanPeriod: loanPeriod,
+});
+
+const isDisabledCalculateButton = computed(() => {
+  if (propertyCost.value) {
+    if (interestRatio.value) {
+      if (loanPeriod.value) {
+        return false;
+      }
+    }
+  }
+  return true;
+});
 
 function handleClickClear() {
+  v$.value.$reset();
   propertyCost.value = null;
   interestRatio.value = null;
   loanPeriod.value = null;
+  loanAmount.value = null;
+  monthlyBaseIncome.value = null;
+  monthlyInstallment.value = null;
 }
 
 function calculateEMI(
@@ -104,8 +174,9 @@ function calculateMinimumMonthlyIncome(propertyPrice: number) {
   return (propertyPrice / basePrice) * baseIncome;
 }
 
-function handleClickCalculate() {
-  if (propertyCost.value && interestRatio.value && loanPeriod.value) {
+async function handleClickCalculate() {
+  const isFormValid = await v$.value.$validate();
+  if (isFormValid) {
     const emi = calculateEMI(
       propertyCost.value,
       interestRatio.value,
@@ -125,11 +196,11 @@ function handleClickCalculate() {
 
 <style lang="scss" scoped>
 .container {
-  min-width: 700px;
+  width: 100%;
   background: #fde9f3;
   border-radius: 12px;
   border: 2px solid var(--primary-color);
-  padding: 20px 15px;
+  padding: 25px 20px;
   position: relative;
 }
 
@@ -147,23 +218,25 @@ function handleClickCalculate() {
 }
 
 .sub-header {
-  margin-top: 20px;
+  margin-top: 15px;
   color: var(--primary-color);
   display: flex;
   align-items: baseline;
 
   .text {
     text-decoration: underline;
+    cursor: pointer;
   }
 }
 
 .icon {
   margin-left: 5px;
   font-size: 10px;
+  cursor: pointer;
 }
 
 .calculation-content {
-  margin-top: 20px;
+  margin-top: 5px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
@@ -178,6 +251,7 @@ function handleClickCalculate() {
 .interest-box {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   gap: 10px;
 }
 

@@ -11,10 +11,10 @@ body {
     font-weight: normal;
     line-height: 1;
     background: var(--background-color);
-  }
+}
 
 .field {
-    margin: 10px 0 15px 0;
+    margin: 10px 0;
 }
 
 .p-tooltip {
@@ -32,4 +32,16 @@ body {
 
 .p-inputtext:enabled:focus {
     border-color: #1DC48D !important;
+}
+
+.p-inputnumber.p-invalid.p-component > .p-inputtext {
+    border-color: #FF5151;
+}
+
+.p-inputnumber-fluid .p-inputnumber-input {
+ margin-bottom: 5px;
+}
+
+.p-error {
+    color: #FF5151;
 }
