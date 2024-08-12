@@ -18,6 +18,7 @@
                 :class="{ 'p-invalid': v$.propertyCost.$error }"
                 :max="99999999999"
                 @blur="v$.propertyCost.$touch"
+                @focus="v$.propertyCost.$reset"
               />
               <InputIcon>บาท</InputIcon>
             </IconField>
@@ -38,6 +39,7 @@
                   fluid
                   :class="{ 'p-invalid': v$.interestRatio.$error }"
                   @blur="v$.interestRatio.$touch"
+                  @focus="v$.interestRatio.$reset"
                 />
                 <InputIcon>%</InputIcon>
               </IconField>
@@ -54,6 +56,7 @@
                   fluid
                   :class="{ 'p-invalid': v$.loanPeriod.$error }"
                   @blur="v$.loanPeriod.$touch"
+                  @focus="v$.loanPeriod.$reset"
                 />
                 <InputIcon>ปี</InputIcon>
               </IconField>
@@ -203,12 +206,23 @@ $mobile: 700px;
 $smallMobile: 568px;
 
 .container {
-  width: 100%;
   background: #fde9f3;
   border-radius: 12px;
   border: 2px solid var(--primary-color);
   padding: 25px 20px;
   position: relative;
+  $width-map: (
+    $laptop: 740px,
+    $tablet: 720px,
+  );
+  @include poly-fluid-sizing("width", $width-map);
+}
+
+@media only screen and (max-width: $mobile) {
+  .container {
+    height: 100vh;
+    border-radius: 0px;
+  }
 }
 
 .tag {
@@ -251,7 +265,7 @@ $smallMobile: 568px;
 .calculation-content {
   margin-top: 5px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
 }
 

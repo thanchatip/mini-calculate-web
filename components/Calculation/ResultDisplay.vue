@@ -1,7 +1,17 @@
 <template>
-  <div class="header" v-tooltip.bottom="{ value: interestTips }">
-    ผลคำนวณเงินกู้ (กรณีกู้ได้ 100%)
-    <i class="icon pi pi-exclamation-circle"></i>
+  <div class="header">
+    <span v-if="isMobile" class="header-text">
+      ผลคำนวณเงินกู้
+      <i
+        class="icon pi pi-exclamation-circle"
+        v-tooltip.bottom.focus="{ value: interestTips }"
+        tabindex="0"
+      ></i>
+    </span>
+    <span v-else class="header-text" v-tooltip.bottom="{ value: interestTips }">
+      ผลคำนวณเงินกู้ (กรณีกู้ได้ 100%)
+      <i class="icon pi pi-exclamation-circle"></i>
+    </span>
   </div>
   <div class="card">
     <div class="result-box">
@@ -9,7 +19,7 @@
         <div class="text">วงเงินกู้</div>
         <div class="value-box">
           <div class="text-amount">{{ dataFormatter(loanAmount) }}</div>
-          <div class="text-suffix">บาท</div>
+          <div v-if="loanAmount" class="text-suffix">บาท</div>
         </div>
       </div>
       <div class="text-content">
@@ -18,7 +28,7 @@
           <div class="text-amount">
             {{ dataFormatter(monthlyBaseIncome) }}
           </div>
-          <div class="text-suffix">บาท</div>
+          <div v-if="monthlyBaseIncome" class="text-suffix">บาท</div>
         </div>
       </div>
       <Divider class="divider" />
@@ -28,7 +38,7 @@
           <div class="text-total-amount">
             {{ dataFormatter(monthlyInstallment) }}
           </div>
-          <div class="text-suffix">บาท</div>
+          <div v-if="monthlyInstallment" class="text-suffix">บาท</div>
         </div>
       </div>
     </div>
@@ -47,8 +57,18 @@ interface Props {
 
 const props = defineProps<Props>();
 
+const isMobile = ref(false);
+
+const checkMobile = () => {
+  isMobile.value = window.matchMedia("(max-width: 992px)").matches;
+};
+
+onMounted(() => {
+  checkMobile();
+  window.addEventListener("resize", checkMobile);
+});
+
 function dataFormatter(value: number) {
-  console.log(value);
   if (isNaN(value)) {
     return "";
   }
@@ -88,6 +108,9 @@ $smallMobile: 568px;
 .header {
   margin: 10px 0;
   font-size: 14px;
+}
+
+.header-text {
   cursor: pointer;
 }
 
