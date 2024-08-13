@@ -1,75 +1,35 @@
-# Nuxt 3 Minimal Starter
+# Mini Calculate Web
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+This repository contains a simple web application designed to perform basic property installment calculations using Nuxt3 and Primevue.
 
-## Setup
+# Installation
 
-Make sure to install the dependencies:
+To run this project locally, follow these steps:
 
-```bash
-# npm
-npm install
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/thanchatip/mini-calculate-web.git
+    ```
 
-# pnpm
-pnpm install
+2. **Navigate to the project directory**:
+    ```bash
+    cd mini-calculate-web
+    ```
 
-# yarn
-yarn install
+3. **Install dependencies**:
+    ```bash
+    npm install
+    ```
+   or if you're using Yarn:
+    ```bash
+    yarn install
+    ```
 
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+4. **Start the development server**:
+    ```bash
+    npm start
+    ```
+   or with Yarn:
+    ```bash
+    yarn start
+    ```
