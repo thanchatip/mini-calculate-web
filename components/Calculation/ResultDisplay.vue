@@ -97,7 +97,6 @@ $smallMobile: 568px;
   background: #fcfcfd;
   border-radius: 16px;
   border: 1px solid #d0d0d0;
-  position: relative;
 }
 
 .result-box {
