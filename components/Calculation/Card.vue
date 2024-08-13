@@ -16,7 +16,6 @@
                 v-model="propertyCost"
                 fluid
                 :class="{ 'p-invalid': v$.propertyCost.$error }"
-                :max="99999999999"
                 @blur="v$.propertyCost.$touch"
                 @focus="v$.propertyCost.$reset"
               />
@@ -33,7 +32,6 @@
               <IconField>
                 <InputNumber
                   v-model="interestRatio"
-                  :max="99.99"
                   :minFractionDigits="2"
                   :maxFractionDigits="2"
                   fluid
@@ -52,7 +50,6 @@
               <IconField>
                 <InputNumber
                   v-model="loanPeriod"
-                  :max="99"
                   fluid
                   :class="{ 'p-invalid': v$.loanPeriod.$error }"
                   @blur="v$.loanPeriod.$touch"
@@ -134,6 +131,10 @@ const v$ = useVuelidate(validations, {
 });
 
 const isDisabledCalculateButton = computed(() => {
+  if (v$.value.$invalid) {
+    return true;
+  }
+
   if (propertyCost.value) {
     if (interestRatio.value) {
       if (loanPeriod.value) {
@@ -207,12 +208,13 @@ $smallMobile: 568px;
 
 .container {
   background: #fde9f3;
+  overflow: scroll;
   border-radius: 12px;
   border: 2px solid var(--primary-color);
   padding: 25px 20px;
   position: relative;
   $width-map: (
-    $laptop: 740px,
+    $laptop: 770px,
     $tablet: 720px,
   );
   @include poly-fluid-sizing("width", $width-map);
@@ -264,9 +266,29 @@ $smallMobile: 568px;
 
 .calculation-content {
   margin-top: 5px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  display: flex;
+  justify-content: space-between;
   gap: 20px;
+}
+
+.form-container,
+.display-result {
+  width: 50%;
+}
+
+@media only screen and (max-width: $mobile) {
+  .calculation-content {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .form-container,
+  .display-result {
+    width: 100%;
+  }
 }
 
 .text {
@@ -298,9 +320,5 @@ $smallMobile: 568px;
 .input-row,
 .button {
   width: 50%;
-}
-
-.display-result {
-  max-width: 100%;
 }
 </style>
