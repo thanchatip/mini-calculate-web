@@ -18,14 +18,16 @@
       <div class="text-content">
         <div class="text">วงเงินกู้</div>
         <div class="value-box">
-          <div class="text-amount">{{ dataFormatter(loanAmount) }}</div>
+          <div v-if="loanAmount" class="text-amount">
+            {{ dataFormatter(loanAmount) }}
+          </div>
           <div v-if="loanAmount" class="text-suffix">บาท</div>
         </div>
       </div>
       <div class="text-content">
         <div class="text">รายได้ขั้นต่ำต่อเดือน</div>
         <div class="value-box">
-          <div class="text-amount">
+          <div v-if="monthlyBaseIncome" class="text-amount">
             {{ dataFormatter(monthlyBaseIncome) }}
           </div>
           <div v-if="monthlyBaseIncome" class="text-suffix">บาท</div>
@@ -35,7 +37,7 @@
       <div class="text-content">
         <div class="text">ยอดผ่อนต่อเดือน</div>
         <div class="value-box">
-          <div class="text-total-amount">
+          <div v-if="monthlyInstallment" class="text-total-amount">
             {{ dataFormatter(monthlyInstallment) }}
           </div>
           <div v-if="monthlyInstallment" class="text-suffix">บาท</div>
@@ -50,9 +52,9 @@ const interestTips =
   "ตัวเลขที่แสดงจะเป็นตัวเลขเฉพาะการกู้ โดยวิธีคำนวณง่ายๆ เงินเดือน 10,000 บาท จะกู้ได้ประมาณ 650,000 บาท";
 
 interface Props {
-  loanAmount: number;
-  monthlyBaseIncome: number;
-  monthlyInstallment: number;
+  loanAmount?: number;
+  monthlyBaseIncome?: number;
+  monthlyInstallment?: number;
 }
 
 const props = defineProps<Props>();
@@ -102,7 +104,7 @@ $smallMobile: 568px;
   margin: 20px 15px;
   display: flex;
   flex-direction: column;
-  //gap: 10px;
+  gap: 10px;
 }
 
 .header {
